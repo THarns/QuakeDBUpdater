@@ -13,7 +13,7 @@ const past24 = {
 }
 
 //schedule event (currently scheduled for: 1 minute)
-let event = schedule.scheduleJob("*/5 * * * *", function() {
+let event = schedule.scheduleJob("*/5 * * * *", () => {
     //axios to get json data (axios automatically parses JSON so yay!)
     axios.all([
         axios.get(oneHour.link),
