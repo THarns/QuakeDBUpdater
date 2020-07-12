@@ -29,8 +29,8 @@ let event = schedule.scheduleJob("*/5 * * * *", () => {
         
         let time = formatAMPM(new Date);
 
-        console.log(oneHourUpdatedJSON.data);
-        console.log(past24UpdatedJSON.data.features.length);
+        console.log("Number of quakes over past 1 hour: " + oneHourUpdatedJSON.data.features.length);
+        console.log("Number of quakes over past 24 hours: " + past24UpdatedJSON.data.features.length);
         console.log(date + " " + time);
 
         updateDB(1, oneHourUpdatedJSON.data, time);
