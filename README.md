@@ -1,1 +1,1 @@
-# quakescraper
+# quakeUpdater
