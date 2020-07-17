@@ -12,7 +12,7 @@ const past24 = {
     view:24
 }
 
-//schedule event (currently scheduled for: 1 minute)
+//schedule event (currently scheduled for: 5 minutes)
 let event = schedule.scheduleJob("*/5 * * * *", () => {
     //axios to get json data (axios automatically parses JSON so yay!)
     axios.all([
