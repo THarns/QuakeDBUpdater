@@ -33,8 +33,8 @@ let event = schedule.scheduleJob("*/5 * * * *", () => {
         console.log("Number of quakes over past 24 hours: " + past24UpdatedJSON.data.features.length);
         console.log(date + " " + time);
 
-        updateDB(1, oneHourUpdatedJSON.data, time);
-        updateDB(24, past24UpdatedJSON.data, time);
+        updateDB('json_data', 1, oneHourUpdatedJSON.data, time);
+        updateDB('json_data', 24, past24UpdatedJSON.data, time);
     })
       
       .catch(err => {

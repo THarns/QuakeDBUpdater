@@ -1,18 +1,40 @@
 const sql = require('./db.js');
 
-function updateDB(interval, features, time) {
+function updateDB(table_name, interval, features, time) { //add table field i.e. JSONdata
 
-    let JSONstringified = JSON.stringify(features);
-    const dataSQL = `UPDATE json_data SET Data = ?, Updated = ? WHERE Time = ?`;
-    let data = [JSONstringified, time, interval];
+    if(table_name === 'json_data') {
+        let JSONstringified = JSON.stringify(features);
+        const dataSQL = `UPDATE json_data SET Data = ?, Updated = ? WHERE Time = ?`;
+        let data = [JSONstringified, time, interval];
 
-    sql.query(dataSQL, data, (error, results, fields) => {
-        if(error) {
-            console.log(error.message);
+        sql.query(dataSQL, data, (error, results) => {
+            if(error) {
+                console.log(error.message);
+            }
+
+            console.log("Rows affected: " + results.affectedRows);
+        });
+
+    } else if(table_name === 'stats_log') {
+    
+        const dataSQL = 'INSERT INTO stats_log SET ?';
+        let values = {
+            MaxMagHR: features.maxHr,
+            pastHRtotal: features.hrTotals,
+            MaxMagDay: features.maxDay,
+            pastDayTotal: features.dayTotal
         }
 
-        console.log("Rows affected: " + results.affectedRows);
-    });
+        console.log(values);
+
+        sql.query(dataSQL, values, (error, results) => {
+            if(error) {
+                console.log(error.message);
+            }
+
+            console.log("Deaths Table rows affected: " + results.affectedRows);
+        });
+    }  
 }
 
 module.exports = updateDB;
