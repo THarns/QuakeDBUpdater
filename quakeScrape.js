@@ -28,13 +28,35 @@ let event = schedule.scheduleJob("*/5 * * * *", () => {
         let date = (today.getMonth()+1) + '-' + today.getDate() + "-" + today.getFullYear();
         
         let time = formatAMPM(new Date);
-
+        
+        console.log(date + " " + time);
         console.log("Number of quakes over past 1 hour: " + oneHourUpdatedJSON.data.features.length);
         console.log("Number of quakes over past 24 hours: " + past24UpdatedJSON.data.features.length);
-        console.log(date + " " + time);
 
         updateDB('json_data', 1, oneHourUpdatedJSON.data, time);
         updateDB('json_data', 24, past24UpdatedJSON.data, time);
+
+        let d = new Date();
+        let min = d.getMinutes();
+        console.log(typeof(min) + ': ' + min);
+      
+        if(min === 0) {
+          let maxHR = getMaxMag(responseArr[0].data);
+          let max24 = getMaxMag(responseArr[1].data);
+          //console.log(responseArr[0].data);
+          let log = responseArr[0].data.features;
+          //console.log(log);
+
+          let statsData = {
+            MaxMagHR: maxHR,
+            pastHRtotal: responseArr[0].data.features.length,
+            MaxMagDay: max24,
+            pastDayTotal: responseArr[1].data.features.length
+          }
+
+          console.log(statsData);
+          updateDB('stats_log', null, statsData, d.toLocaleDateString() + " - " + d.toLocaleTimeString());
+        }
     })
       
       .catch(err => {
@@ -54,4 +76,16 @@ function formatAMPM(date) {
     
     let strTime = hours + ':' + minutes + ' ' + ampm;
     return strTime;
+  }
+
+  function getMaxMag(JSONset) {
+    let arr = JSONset.features.map((obj) => {
+      let thisQuakeMag = obj.properties.mag;
+      return thisQuakeMag;
+    });
+    //console.log(JSONset.features);
+
+    let max = Math.max(...arr);
+    console.log(max);
+    return max;
   }

@@ -19,10 +19,11 @@ function updateDB(table_name, interval, features, time) { //add table field i.e.
     
         const dataSQL = 'INSERT INTO stats_log SET ?';
         let values = {
-            MaxMagHR: features.maxHr,
-            pastHRtotal: features.hrTotals,
-            MaxMagDay: features.maxDay,
-            pastDayTotal: features.dayTotal
+            MaxMagHR: features.MaxMagHR,
+            pastHRtotal: features.pastHRtotal,
+            MaxMagDay: features.MaxMagDay,
+            pastDayTotal: features.pastDayTotal,
+            TimeStamp: time
         }
 
         console.log(values);
@@ -32,7 +33,7 @@ function updateDB(table_name, interval, features, time) { //add table field i.e.
                 console.log(error.message);
             }
 
-            console.log("Deaths Table rows affected: " + results.affectedRows);
+            console.log("Statslog rows affected: " + results.affectedRows);
         });
     }  
 }
