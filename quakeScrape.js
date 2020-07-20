@@ -21,31 +21,24 @@ let event = schedule.scheduleJob("*/5 * * * *", () => {
       ])
       .then(responseArr => {
         //this will be executed when both requests are complete
+        let d = new Date();
         let oneHourUpdatedJSON = responseArr[0];
         let past24UpdatedJSON = responseArr[1];
 
-        let today = new Date();
-        let date = (today.getMonth()+1) + '-' + today.getDate() + "-" + today.getFullYear();
-        
-        let time = formatAMPM(new Date);
-        
-        console.log(date + " " + time);
+        let time = formatSQLtime(d);
+        console.log(time);
         console.log("Number of quakes over past 1 hour: " + oneHourUpdatedJSON.data.features.length);
         console.log("Number of quakes over past 24 hours: " + past24UpdatedJSON.data.features.length);
 
         updateDB('json_data', 1, oneHourUpdatedJSON.data, time);
         updateDB('json_data', 24, past24UpdatedJSON.data, time);
 
-        let d = new Date();
         let min = d.getMinutes();
         console.log(typeof(min) + ': ' + min);
       
         if(min === 0) {
           let maxHR = getMaxMag(responseArr[0].data);
           let max24 = getMaxMag(responseArr[1].data);
-          //console.log(responseArr[0].data);
-          let log = responseArr[0].data.features;
-          //console.log(log);
 
           let statsData = {
             MaxMagHR: maxHR,
@@ -55,7 +48,7 @@ let event = schedule.scheduleJob("*/5 * * * *", () => {
           }
 
           console.log(statsData);
-          updateDB('stats_log', null, statsData, d.toLocaleDateString() + " - " + d.toLocaleTimeString());
+          updateDB('stats_log', null, statsData, formatSQLtime(d));
         }
     })
       
@@ -77,6 +70,22 @@ function formatAMPM(date) {
     let strTime = hours + ':' + minutes + ' ' + ampm;
     return strTime;
   }
+
+  function formatSQLtime(date) {
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+
+    hours = hours < 10 ? '0' + hours : hours;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+
+    let monthFormat = (date.getMonth()+1) < 10 ? '0' + (date.getMonth()+1) : (date.getMonth()+1);
+    let dateFormat = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+    let sqlFormattedDate = date.getFullYear() + '-' + monthFormat + '-' + dateFormat;
+
+    let time = sqlFormattedDate + " " + hours + ':' + minutes + ':' + '00';
+    let strTime = time.toString();
+    return strTime;
+}
 
   function getMaxMag(JSONset) {
     let arr = JSONset.features.map((obj) => {

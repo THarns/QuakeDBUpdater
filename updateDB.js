@@ -4,7 +4,7 @@ function updateDB(table_name, interval, features, time) { //add table field i.e.
 
     if(table_name === 'json_data') {
         let JSONstringified = JSON.stringify(features);
-        const dataSQL = `UPDATE json_data SET Data = ?, Updated = ? WHERE Time = ?`;
+        const dataSQL = `UPDATE json_data SET Data = ?, Updated = ? WHERE TimeFrame = ?`;
         let data = [JSONstringified, time, interval];
 
         sql.query(dataSQL, data, (error, results) => {
