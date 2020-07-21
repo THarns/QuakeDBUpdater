@@ -13,7 +13,7 @@ const past24 = {
 }
 
 //schedule event (currently scheduled for: 5 minutes)
-let event = schedule.scheduleJob("*/5 * * * *", () => {
+let event = schedule.scheduleJob("*/1 * * * *", () => {
     //axios to get json data (axios automatically parses JSON so yay!)
     axios.all([
         axios.get(oneHour.link),
@@ -21,18 +21,19 @@ let event = schedule.scheduleJob("*/5 * * * *", () => {
       ])
       .then(responseArr => {
         //this will be executed when both requests are complete
-        let d = new Date();
         let oneHourUpdatedJSON = responseArr[0];
         let past24UpdatedJSON = responseArr[1];
 
-        let time = formatSQLtime(d);
+        let time = formatSQLtime(new Date());
         console.log(time);
         console.log("Number of quakes over past 1 hour: " + oneHourUpdatedJSON.data.features.length);
         console.log("Number of quakes over past 24 hours: " + past24UpdatedJSON.data.features.length);
+        console.log(past24UpdatedJSON.data);
 
         updateDB('json_data', 1, oneHourUpdatedJSON.data, time);
         updateDB('json_data', 24, past24UpdatedJSON.data, time);
 
+        let d = new Date();
         let min = d.getMinutes();
         console.log(typeof(min) + ': ' + min);
       
@@ -84,6 +85,7 @@ function formatAMPM(date) {
 
     let time = sqlFormattedDate + " " + hours + ':' + minutes + ':' + '00';
     let strTime = time.toString();
+    console.log(strTime);
     return strTime;
 }
 
