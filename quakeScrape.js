@@ -28,14 +28,12 @@ let event = schedule.scheduleJob("*/5 * * * *", () => {
         console.log(time);
         console.log("Number of quakes over past 1 hour: " + oneHourUpdatedJSON.data.features.length);
         console.log("Number of quakes over past 24 hours: " + past24UpdatedJSON.data.features.length);
-        console.log(past24UpdatedJSON.data);
 
         updateDB('json_data', 1, oneHourUpdatedJSON.data, time);
         updateDB('json_data', 24, past24UpdatedJSON.data, time);
 
         let d = new Date();
         let min = d.getMinutes();
-        console.log(typeof(min) + ': ' + min);
       
         if(min === 0) {
           let maxHR = getMaxMag(responseArr[0].data);
@@ -57,20 +55,6 @@ let event = schedule.scheduleJob("*/5 * * * *", () => {
         console.log("ERROR = " + err);
     });
 });
-
-function formatAMPM(date) {
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    let ampm = hours >= 12 ? 'pm' : 'am';
-
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    
-    let strTime = hours + ':' + minutes + ' ' + ampm;
-    return strTime;
-  }
 
   function formatSQLtime(date) {
     let hours = date.getHours();
