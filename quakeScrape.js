@@ -35,7 +35,7 @@ let event = schedule.scheduleJob("*/5 * * * *", () => {
         let d = new Date();
         let min = d.getMinutes();
       
-        if(min === 0) {
+        if(min === 0 || min === 30) {
           let maxHR = getMaxMag(responseArr[0].data);
           let max24 = getMaxMag(responseArr[1].data);
 
@@ -81,6 +81,16 @@ let event = schedule.scheduleJob("*/5 * * * *", () => {
     //console.log(JSONset.features);
 
     let max = Math.max(...arr);
-    console.log(max);
-    return max;
+
+    if(max.toString().length > 4) {
+
+      let maxToPrecision = max.toPrecision(3);
+      let precisionToFloat = parseFloat(maxToPrecision);
+      console.log(precisionToFloat);
+      return precisionToFloat;
+
+    } else {
+
+      return max;
+    }
   }
